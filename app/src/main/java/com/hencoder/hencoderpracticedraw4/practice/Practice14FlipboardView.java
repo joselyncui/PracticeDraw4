@@ -8,6 +8,7 @@ import android.graphics.BitmapFactory;
 import android.graphics.Camera;
 import android.graphics.Canvas;
 import android.graphics.Paint;
+import android.graphics.Path;
 import android.support.annotation.Nullable;
 import android.util.AttributeSet;
 import android.view.View;
@@ -65,6 +66,8 @@ public class Practice14FlipboardView extends View {
     protected void onDraw(Canvas canvas) {
         super.onDraw(canvas);
 
+
+
         int bitmapWidth = bitmap.getWidth();
         int bitmapHeight = bitmap.getHeight();
         int centerX = getWidth() / 2;
@@ -73,13 +76,21 @@ public class Practice14FlipboardView extends View {
         int y = centerY - bitmapHeight / 2;
 
         canvas.save();
+        canvas.clipRect(x,y,x+bitmapWidth,centerY);
+        canvas.drawBitmap(bitmap, x, y, paint);
+        canvas.restore();
 
+        canvas.save();
         camera.save();
         camera.rotateX(degree);
         canvas.translate(centerX, centerY);
         camera.applyToCanvas(canvas);
         canvas.translate(-centerX, -centerY);
         camera.restore();
+
+        Path path = new Path();
+        path.addRect(x,centerY,x+bitmapWidth,y+bitmapHeight, Path.Direction.CW);
+        canvas.clipPath(path);
 
         canvas.drawBitmap(bitmap, x, y, paint);
         canvas.restore();
